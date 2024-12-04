@@ -1,0 +1,25 @@
+﻿<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Contact</th>
+            <th>Contact</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var lecturer in Model)
+        {
+            <tr>
+                <td>@lecturer.Name</td>
+                <td>@lecturer.Email</td>
+                <td>@lecturer.ContactNumber</td>
+                <td>@lecturer.Address</td>
+                <td>
+                    <a href="/Home/UpdateLecture?id=@lecturer.LecturerId" class="btn btn-warning btn-sm">Edit</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

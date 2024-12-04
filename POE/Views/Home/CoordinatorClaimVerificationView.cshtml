@@ -1,0 +1,152 @@
+﻿@model IEnumerable<POE.Models.LecturerClaim>
+
+@{
+    ViewData["Title"] = "Pending Claims for Verification";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pending Claims for Verification</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            margin-top: 50px;
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 2rem;
+            color: #34495e;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .table th, .table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .table th {
+            background-color: #34495e;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        .actions {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .actions form {
+            margin-bottom: 10px;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Pending Claims for Verification</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Lecturer</th>
+                    <th>Hours Worked</th>
+                    <th>Hourly Rate</th>
+                    <th>Total Amount</th>
+                    <th>Notes</th>
+                    <th>Submission Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var claim in Model)
+                {
+                    <tr>
+                        <td>@claim.LecturerName</td>
+                        <td>@claim.HoursWorked</td>
+                        <td>@claim.HourlyRate</td>
+                        <td>@(claim.HoursWorked * claim.HourlyRate)</td>
+                        <td>@claim.Notes</td>
+                        <td>@claim.SubmissionDate.ToShortDateString()</td>
+                        <td>
+                            <div class="actions">
+                                <form asp-action="ApproveClaim" method="post">
+                                    <input type="hidden" name="Id" value="@claim.Id" />
+                                    <button type="submit" class="btn btn-success">Approve</button>
+                                </form>
+                                <form asp-action="RejectClaim" method="post">
+                                    <input type="hidden" name="Id" value="@claim.Id" />
+                                    <button type="submit" class="btn btn-danger">Reject</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <a href="@Url.Action("index", "Home")" class="back-button">Log out</a>
+</body>
+
+</html>

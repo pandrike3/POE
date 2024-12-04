@@ -1,0 +1,119 @@
+﻿@model POE.Models.LecturerClaim
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claim Successfully Submitted</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        .claim-details {
+            margin-top: 20px;
+        }
+
+            .claim-details p {
+                font-size: 1.2em;
+                line-height: 1.5;
+            }
+
+        .back-button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 15px;
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            width: 100px;
+            transition: background-color 0.3s;
+        }
+
+            .back-button:hover {
+                background-color: #34495e;
+            }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Claim Successfully Submitted!</h2>
+        <div class="claim-details">
+            <p><strong>Lecturer Name:</strong> @Model.LecturerName</p>
+            <p><strong>Hours Worked:</strong> @Model.HoursWorked</p>
+            <p><strong>Hourly Rate:</strong> @Model.HourlyRate</p>
+            <p><strong>Notes:</strong> @Model.Notes</p>
+            <p><strong>Submission Date:</strong> @Model.SubmissionDate.ToString("dd MMMM yyyy")</p>
+            <p><strong>Status:</strong> @Model.Status</p>
+            @if (!string.IsNullOrEmpty(Model.DocumentPath))
+            {
+                <p><strong>Document:</strong> <a href="@Url.Content("~/"+Model.DocumentPath)">View Uploaded Document</a></p>
+            }
+        </div>
+        <a href="@Url.Action("index", "Home")" class="back-button">Back</a>
+       
+    </div>
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#generateReportBtn').click(function () {
+                // Disable the button to prevent multiple clicks
+                $(this).prop('disabled', true);
+                $(this).text('Generating...');
+
+                // Send AJAX request to the controller to generate the report
+                $.ajax({
+                    url: '@Url.Action("GenerateClaimReport", "Claims")', // The action to call in the controller
+                    type: 'GET', // The HTTP method (GET or POST)
+                    xhrFields: {
+                        responseType: 'blob' // Specify that we expect a binary response (PDF)
+                    },
+                    success: function (data) {
+                        // Create a link element to download the PDF
+                        var blob = new Blob([data], { type: 'application/pdf' });
+                        var link = document.createElement('a');
+                        link.href = URL.createObjectURL(blob);
+                        link.download = 'ClaimReport.pdf'; // Name the downloaded file
+                        link.click();
+
+                        // Re-enable the button
+                        $('#generateReportBtn').prop('disabled', false);
+                        $('#generateReportBtn').text('Generate Claim Report');
+                    },
+                    error: function () {
+                        alert('An error occurred while generating the report.');
+                        $('#generateReportBtn').prop('disabled', false);
+                        $('#generateReportBtn').text('Generate Claim Report');
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+
+</html>
